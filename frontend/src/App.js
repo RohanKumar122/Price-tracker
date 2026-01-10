@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { Calendar, DollarSign, TrendingUp, Download, Plus, X, Home, PieChart, Users, LogOut, AlertCircle, Check } from 'lucide-react';
 
-const API_URL = 'http://localhost:5000/api';
+const API_URL = 'https://price-tracker-olive-xi.vercel.app';
 
 // API Helper Functions
 const api = {

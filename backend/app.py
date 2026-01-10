@@ -32,6 +32,10 @@ def serialize_doc(doc):
     return doc
 
 # ==================== AUTH ROUTES ====================
+# status
+@app.route('/api/status', methods=['GET'])
+def status():
+    return jsonify({'status': 'API is running'}), 200
 
 @app.route('/api/auth/signup', methods=['POST'])
 def signup():
