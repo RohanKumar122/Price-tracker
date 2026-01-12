@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { DollarSign, AlertCircle } from 'lucide-react';
+import { IndianRupeeIcon, AlertCircle, IndianRupee } from 'lucide-react';
 import { api } from '../api';
 
 const AuthScreen = ({ onLogin }) => {
@@ -32,7 +32,7 @@ const AuthScreen = ({ onLogin }) => {
             <div className="bg-white rounded-3xl shadow-2xl w-full max-w-md p-8">
                 <div className="text-center mb-8">
                     <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-purple-500 to-blue-500 rounded-2xl mb-4">
-                        <DollarSign className="text-white" size={32} />
+                        <IndianRupee className="text-white" size={32} />
                     </div>
                     <h1 className="text-3xl font-bold text-gray-800">Expense Tracker</h1>
                     <p className="text-gray-600 mt-2">Manage your finances smartly</p>
