@@ -34,7 +34,7 @@ const AuthScreen = ({ onLogin }) => {
                     <div className="inline-flex items-center justify-center w-16 h-16 bg-gradient-to-br from-purple-500 to-blue-500 rounded-2xl mb-4">
                         <IndianRupee className="text-white" size={32} />
                     </div>
-                    <h1 className="text-3xl font-bold text-gray-800">Expense Tracker</h1>
+                    <h1 className="text-3xl font-bold text-gray-800">हिसाब किताब</h1>
                     <p className="text-gray-600 mt-2">Manage your finances smartly</p>
                 </div>
 

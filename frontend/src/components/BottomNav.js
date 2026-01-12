@@ -4,8 +4,8 @@ import { Home, PieChart, Users } from 'lucide-react';
 const BottomNav = ({ currentScreen, setCurrentScreen }) => {
     const navItems = [
         { id: 'home', icon: Home, label: 'Home' },
-        { id: 'stats', icon: PieChart, label: 'Stats' },
         { id: 'loans', icon: Users, label: 'Loans' },
+        { id: 'stats', icon: PieChart, label: 'Stats' },
     ];
 
     return (
