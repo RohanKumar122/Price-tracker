@@ -1,4 +1,5 @@
 import React from 'react';
+import { IndianRupee } from 'lucide-react';
 import { getCategoryColor, getCategoryIcon } from '../utils/helpers';
 
 const StatsScreen = ({ stats }) => {
@@ -28,7 +29,10 @@ const StatsScreen = ({ stats }) => {
                                             <span className="font-medium text-gray-700">{category}</span>
                                         </div>
                                         <div className="text-right">
-                                            <div className="font-bold text-gray-800">${amount.toFixed(2)}</div>
+                                            <div className="font-bold text-gray-800 flex items-center justify-end gap-1">
+                                                <IndianRupee size={14} strokeWidth={2.5} />
+                                                {amount.toFixed(2)}
+                                            </div>
                                             <div className="text-sm text-gray-500">{percentage}%</div>
                                         </div>
                                     </div>

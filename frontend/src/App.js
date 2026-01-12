@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { LogOut, Plus } from 'lucide-react';
+import { LogOut, Plus, IndianRupee, Trash2 } from 'lucide-react';
 import { api } from './api';
 import AuthScreen from './components/AuthScreen';
 import HomeScreen from './components/HomeScreen';
@@ -7,6 +7,8 @@ import StatsScreen from './components/StatsScreen';
 import LoansScreen from './components/LoansScreen';
 import BottomNav from './components/BottomNav';
 import AddModal from './components/AddModal';
+import ConfirmModal from './components/ConfirmModal';
+
 
 export default function ExpenseTracker() {
   const [user, setUser] = useState(null);
@@ -19,6 +21,7 @@ export default function ExpenseTracker() {
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   const [viewMode, setViewMode] = useState('monthly');
   const [showAddModal, setShowAddModal] = useState(false);
+  const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -67,7 +70,7 @@ export default function ExpenseTracker() {
     }
   };
 
-  const handleLogout = () => {
+  const performLogout = () => {
     api.clearToken();
     setUser(null);
     setCurrentScreen('home');
@@ -117,7 +120,7 @@ export default function ExpenseTracker() {
             <p className="text-purple-100 text-sm">Track your expenses</p>
           </div>
           <button
-            onClick={handleLogout}
+            onClick={() => setShowLogoutConfirm(true)}
             className="p-2 hover:bg-white/20 rounded-xl transition"
           >
             <LogOut size={24} />
@@ -231,6 +234,14 @@ export default function ExpenseTracker() {
           }}
         />
       )}
+
+      <ConfirmModal
+        isOpen={showLogoutConfirm}
+        onClose={() => setShowLogoutConfirm(false)}
+        onConfirm={performLogout}
+        title="Logout"
+        message="Are you sure you want to logout?"
+      />
     </div>
   );
 }
