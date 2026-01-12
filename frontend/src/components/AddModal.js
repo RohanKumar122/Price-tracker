@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { X } from 'lucide-react';
 
-const AddModal = ({ currentScreen, onClose, onAdd }) => {
+const AddModal = ({ currentScreen, onClose, onAdd, initialData, isEditing }) => {
     const isLoan = currentScreen === 'loans';
     const [formData, setFormData] = useState({
         title: '',
@@ -12,6 +12,20 @@ const AddModal = ({ currentScreen, onClose, onAdd }) => {
         person_name: '',
         reminder_date: '',
     });
+
+    useEffect(() => {
+        if (initialData) {
+            setFormData({
+                title: initialData.title || '',
+                amount: initialData.amount || '',
+                category: initialData.category || 'Food',
+                date: initialData.date ? initialData.date.split('T')[0] : new Date().toISOString().split('T')[0],
+                description: initialData.description || '',
+                person_name: initialData.person_name || '',
+                reminder_date: initialData.reminder_date ? initialData.reminder_date.split('T')[0] : '',
+            });
+        }
+    }, [initialData]);
 
     const categories = ['Food', 'Transport', 'Shopping', 'Bills', 'Entertainment', 'Health', 'Other'];
 
@@ -38,7 +52,7 @@ const AddModal = ({ currentScreen, onClose, onAdd }) => {
             <div className="bg-white w-full max-w-lg rounded-t-3xl p-6 max-h-[90vh] overflow-y-auto">
                 <div className="flex justify-between items-center mb-6">
                     <h2 className="text-2xl font-bold text-gray-800">
-                        {isLoan ? 'Add Loan' : 'Add Expense'}
+                        {isEditing ? `Edit ${isLoan ? 'Loan' : 'Expense'}` : `Add ${isLoan ? 'Loan' : 'Expense'}`}
                     </h2>
                     <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-full transition">
                         <X size={24} />
@@ -134,7 +148,7 @@ const AddModal = ({ currentScreen, onClose, onAdd }) => {
                         type="submit"
                         className="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white py-4 rounded-xl font-semibold hover:shadow-lg transition"
                     >
-                        {isLoan ? 'Add Loan' : 'Add Expense'}
+                        {isEditing ? 'Update' : (isLoan ? 'Add Loan' : 'Add Expense')}
                     </button>
                 </form>
             </div>

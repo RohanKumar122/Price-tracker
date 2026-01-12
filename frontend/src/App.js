@@ -21,6 +21,7 @@ export default function ExpenseTracker() {
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   const [viewMode, setViewMode] = useState('monthly');
   const [showAddModal, setShowAddModal] = useState(false);
+  const [editingItem, setEditingItem] = useState(null);
   const [showLogoutConfirm, setShowLogoutConfirm] = useState(false);
   const [loading, setLoading] = useState(true);
 
@@ -188,6 +189,10 @@ export default function ExpenseTracker() {
             await api.deleteExpense(id);
             loadData();
           }}
+          onEdit={(item) => {
+            setEditingItem(item);
+            setShowAddModal(true);
+          }}
           onDownload={downloadCSV}
           onMarkPaid={async (id) => {
             await api.updateLoanStatus(id, 'paid');
@@ -203,6 +208,10 @@ export default function ExpenseTracker() {
             await api.deleteLoan(id);
             loadData();
           }}
+          onEdit={(item) => {
+            setEditingItem(item);
+            setShowAddModal(true);
+          }}
           onUpdateStatus={async (id, status) => {
             await api.updateLoanStatus(id, status);
             loadData();
@@ -211,7 +220,10 @@ export default function ExpenseTracker() {
       </div>
 
       <button
-        onClick={() => setShowAddModal(true)}
+        onClick={() => {
+          setEditingItem(null);
+          setShowAddModal(true);
+        }}
         className="fixed right-6 bottom-24 w-16 h-16 bg-gradient-to-r from-purple-600 to-blue-600 text-white rounded-full shadow-2xl flex items-center justify-center hover:scale-110 transition-transform"
       >
         <Plus size={28} />
@@ -222,15 +234,29 @@ export default function ExpenseTracker() {
       {showAddModal && (
         <AddModal
           currentScreen={currentScreen}
-          onClose={() => setShowAddModal(false)}
+          initialData={editingItem}
+          isEditing={!!editingItem}
+          onClose={() => {
+            setShowAddModal(false);
+            setEditingItem(null);
+          }}
           onAdd={async (data) => {
-            if (currentScreen === 'loans') {
-              await api.addLoan(data);
+            if (editingItem) {
+              if (currentScreen === 'loans') {
+                await api.updateLoanDetails(editingItem._id, data);
+              } else {
+                await api.updateExpense(editingItem._id, data);
+              }
             } else {
-              await api.addExpense(data);
+              if (currentScreen === 'loans') {
+                await api.addLoan(data);
+              } else {
+                await api.addExpense(data);
+              }
             }
             loadData();
             setShowAddModal(false);
+            setEditingItem(null);
           }}
         />
       )}

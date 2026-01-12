@@ -33,6 +33,36 @@ def add_expense():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+@expenses_bp.route('/<expense_id>', methods=['PUT', 'PATCH'])
+@jwt_required()
+def update_expense(expense_id):
+    try:
+        user_id = get_jwt_identity()
+        data = request.json
+        
+        updates = {}
+        if 'title' in data: updates['title'] = data['title']
+        if 'amount' in data: updates['amount'] = float(data['amount'])
+        if 'category' in data: updates['category'] = data['category']
+        if 'description' in data: updates['description'] = data['description']
+        if 'date' in data: updates['date'] = datetime.fromisoformat(data['date'].replace('Z', '+00:00'))
+        
+        if not updates:
+            return jsonify({'message': 'No updates provided'}), 400
+            
+        result = expenses_collection.update_one(
+            {'_id': ObjectId(expense_id), 'user_id': user_id},
+            {'$set': updates}
+        )
+        
+        if result.matched_count == 0:
+            return jsonify({'error': 'Expense not found'}), 404
+            
+        return jsonify({'message': 'Expense updated'}), 200
+        
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 @expenses_bp.route('', methods=['GET'])
 @jwt_required()
 def get_expenses():

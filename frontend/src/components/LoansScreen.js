@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
-import { X, Check, IndianRupee, Trash2, CheckCircle2 } from 'lucide-react';
+import { X, Check, IndianRupee, Trash2, CheckCircle2, Pencil } from 'lucide-react';
 import ConfirmModal from './ConfirmModal';
 
-const LoansScreen = ({ loans, onDelete, onUpdateStatus }) => {
+const LoansScreen = ({ loans, onDelete, onEdit, onUpdateStatus }) => {
     const [isSelectionMode, setIsSelectionMode] = useState(false);
     const [selectedIds, setSelectedIds] = useState(new Set());
     const [deleteId, setDeleteId] = useState(null);
@@ -100,16 +100,16 @@ const LoansScreen = ({ loans, onDelete, onUpdateStatus }) => {
                                 key={loan._id}
                                 onClick={() => isSelectionMode && toggleSelection(loan._id)}
                                 className={`p-3 rounded-xl border transition cursor-pointer ${isSelectionMode && selectedIds.has(loan._id)
-                                        ? 'bg-orange-50 border-orange-300'
-                                        : 'bg-orange-50 border-orange-200'
+                                    ? 'bg-orange-50 border-orange-300'
+                                    : 'bg-orange-50 border-orange-200'
                                     }`}
                             >
                                 <div className="flex justify-between items-start mb-2">
                                     <div className="flex items-start gap-3">
                                         {isSelectionMode && (
                                             <div className={`mt-1 w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors ${selectedIds.has(loan._id)
-                                                    ? 'bg-orange-500 border-orange-500'
-                                                    : 'border-gray-400'
+                                                ? 'bg-orange-500 border-orange-500'
+                                                : 'border-gray-400'
                                                 }`}>
                                                 {selectedIds.has(loan._id) && <CheckCircle2 size={14} className="text-white" />}
                                             </div>
@@ -123,15 +123,26 @@ const LoansScreen = ({ loans, onDelete, onUpdateStatus }) => {
                                         </div>
                                     </div>
                                     {!isSelectionMode && (
-                                        <button
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                confirmSingleDelete(loan._id);
-                                            }}
-                                            className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition"
-                                        >
-                                            <X size={18} />
-                                        </button>
+                                        <div className="flex gap-1">
+                                            <button
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    onEdit(loan);
+                                                }}
+                                                className="p-2 text-blue-500 hover:bg-blue-50 rounded-lg transition"
+                                            >
+                                                <Pencil size={18} />
+                                            </button>
+                                            <button
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    confirmSingleDelete(loan._id);
+                                                }}
+                                                className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition"
+                                            >
+                                                <X size={18} />
+                                            </button>
+                                        </div>
                                     )}
                                 </div>
                                 <div className="text-sm text-gray-600 mb-2 pl-8">
@@ -169,15 +180,15 @@ const LoansScreen = ({ loans, onDelete, onUpdateStatus }) => {
                                 key={loan._id}
                                 onClick={() => isSelectionMode && toggleSelection(loan._id)}
                                 className={`p-2.5 rounded-xl border flex justify-between items-center transition cursor-pointer ${isSelectionMode && selectedIds.has(loan._id)
-                                        ? 'bg-green-50 border-green-300'
-                                        : 'bg-green-50 border-green-200'
+                                    ? 'bg-green-50 border-green-300'
+                                    : 'bg-green-50 border-green-200'
                                     }`}
                             >
                                 <div className="flex items-center gap-3">
                                     {isSelectionMode && (
                                         <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors ${selectedIds.has(loan._id)
-                                                ? 'bg-green-500 border-green-500'
-                                                : 'border-gray-400'
+                                            ? 'bg-green-500 border-green-500'
+                                            : 'border-gray-400'
                                             }`}>
                                             {selectedIds.has(loan._id) && <CheckCircle2 size={14} className="text-white" />}
                                         </div>

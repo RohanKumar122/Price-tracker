@@ -51,6 +51,11 @@ export const api = {
         body: JSON.stringify(expense),
     }),
 
+    updateExpense: (id, updates) => api.request(`/expenses/${id}`, {
+        method: 'PUT',
+        body: JSON.stringify(updates),
+    }),
+
     deleteExpense: (id) => api.request(`/expenses/${id}`, { method: 'DELETE' }),
 
     getStats: (month, year) => {
@@ -68,6 +73,11 @@ export const api = {
     addLoan: (loan) => api.request('/loans', {
         method: 'POST',
         body: JSON.stringify(loan),
+    }),
+
+    updateLoanDetails: (id, updates) => api.request(`/loans/${id}`, {
+        method: 'PUT',
+        body: JSON.stringify(updates),
     }),
 
     updateLoanStatus: (id, status) => api.request(`/loans/${id}/status`, {

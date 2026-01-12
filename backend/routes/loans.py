@@ -36,6 +36,37 @@ def add_loan():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
 
+@loans_bp.route('/<loan_id>', methods=['PUT'])
+@jwt_required()
+def update_loan_details(loan_id):
+    try:
+        user_id = get_jwt_identity()
+        data = request.json
+        
+        updates = {}
+        if 'person_name' in data: updates['person_name'] = data['person_name']
+        if 'amount' in data: updates['amount'] = float(data['amount'])
+        if 'description' in data: updates['description'] = data['description']
+        if 'date' in data: updates['date'] = datetime.fromisoformat(data['date'].replace('Z', '+00:00'))
+        if 'reminder_date' in data:
+            updates['reminder_date'] = datetime.fromisoformat(data['reminder_date'].replace('Z', '+00:00')) if data['reminder_date'] else None
+            
+        if not updates:
+            return jsonify({'message': 'No updates provided'}), 400
+
+        result = loans_collection.update_one(
+            {'_id': ObjectId(loan_id), 'user_id': user_id},
+            {'$set': updates}
+        )
+        
+        if result.matched_count == 0:
+            return jsonify({'error': 'Loan not found'}), 404
+            
+        return jsonify({'message': 'Loan updated'}), 200
+        
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
 @loans_bp.route('', methods=['GET'])
 @jwt_required()
 def get_loans():

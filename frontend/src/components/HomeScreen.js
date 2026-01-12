@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { Download, AlertCircle, X, IndianRupee, Trash2, CheckCircle2 } from 'lucide-react';
+import { Download, AlertCircle, X, IndianRupee, Trash2, CheckCircle2, Pencil } from 'lucide-react';
 import { getCategoryColor, getCategoryIcon } from '../utils/helpers';
 import ConfirmModal from './ConfirmModal';
 
-const HomeScreen = ({ stats, expenses, reminders, onDelete, onDownload, onMarkPaid }) => {
+const HomeScreen = ({ stats, expenses, reminders, onDelete, onEdit, onDownload, onMarkPaid }) => {
     const [isSelectionMode, setIsSelectionMode] = useState(false);
     const [selectedIds, setSelectedIds] = useState(new Set());
     const [deleteId, setDeleteId] = useState(null); // For single delete confirmation
@@ -148,21 +148,21 @@ const HomeScreen = ({ stats, expenses, reminders, onDelete, onDownload, onMarkPa
                             <div
                                 key={expense._id}
                                 onClick={() => isSelectionMode && toggleSelection(expense._id)}
-                                className={`flex items-center justify-between p-2.5 rounded-xl transition cursor-pointer ${isSelectionMode && selectedIds.has(expense._id)
+                                className={`flex items - center justify - between p - 2.5 rounded - xl transition cursor - pointer ${isSelectionMode && selectedIds.has(expense._id)
                                         ? 'bg-purple-50 border border-purple-200'
                                         : 'bg-gray-50 hover:bg-gray-100'
-                                    }`}
+                                    } `}
                             >
                                 <div className="flex items-center gap-3">
                                     {isSelectionMode ? (
-                                        <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors ${selectedIds.has(expense._id)
+                                        <div className={`w - 5 h - 5 rounded - full border - 2 flex items - center justify - center transition - colors ${selectedIds.has(expense._id)
                                                 ? 'bg-purple-500 border-purple-500'
                                                 : 'border-gray-300'
-                                            }`}>
+                                            } `}>
                                             {selectedIds.has(expense._id) && <CheckCircle2 size={14} className="text-white" />}
                                         </div>
                                     ) : (
-                                        <div className={`w-10 h-10 rounded-full flex items-center justify-center ${getCategoryColor(expense.category)}`}>
+                                        <div className={`w - 10 h - 10 rounded - full flex items - center justify - center ${getCategoryColor(expense.category)} `}>
                                             {getCategoryIcon(expense.category)}
                                         </div>
                                     )}
@@ -181,15 +181,26 @@ const HomeScreen = ({ stats, expenses, reminders, onDelete, onDownload, onMarkPa
                                         </div>
                                     </div>
                                     {!isSelectionMode && (
-                                        <button
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                confirmSingleDelete(expense._id);
-                                            }}
-                                            className="p-1.5 text-red-500 hover:bg-red-50 rounded-lg transition"
-                                        >
-                                            <X size={18} />
-                                        </button>
+                                        <div className="flex gap-1">
+                                            <button
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    onEdit(expense);
+                                                }}
+                                                className="p-1.5 text-blue-500 hover:bg-blue-50 rounded-lg transition"
+                                            >
+                                                <Pencil size={18} />
+                                            </button>
+                                            <button
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    confirmSingleDelete(expense._id);
+                                                }}
+                                                className="p-1.5 text-red-500 hover:bg-red-50 rounded-lg transition"
+                                            >
+                                                <X size={18} />
+                                            </button>
+                                        </div>
                                     )}
                                 </div>
                             </div>
@@ -204,7 +215,7 @@ const HomeScreen = ({ stats, expenses, reminders, onDelete, onDownload, onMarkPa
                 onConfirm={executeDelete}
                 title={isMultiDelete ? "Delete Items" : "Delete Expense"}
                 message={isMultiDelete
-                    ? `Are you sure you want to delete ${selectedIds.size} items?`
+                    ? `Are you sure you want to delete ${selectedIds.size} items ? `
                     : "Are you sure you want to delete this expense?"
                 }
             />
