@@ -3,14 +3,17 @@ import { X } from 'lucide-react';
 
 const AddModal = ({ currentScreen, onClose, onAdd, initialData, isEditing }) => {
     const isLoan = currentScreen === 'loans';
+    const isBigExpense = currentScreen === 'big-expenses';
+
     const [formData, setFormData] = useState({
         title: '',
         amount: '',
-        category: 'Food',
+        category: isBigExpense ? 'Electronics' : 'Food',
         date: new Date().toISOString().split('T')[0],
         description: '',
         person_name: '',
         reminder_date: '',
+        status: 'planned'
     });
 
     useEffect(() => {
@@ -18,16 +21,20 @@ const AddModal = ({ currentScreen, onClose, onAdd, initialData, isEditing }) => 
             setFormData({
                 title: initialData.title || '',
                 amount: initialData.amount || '',
-                category: initialData.category || 'Food',
+                category: initialData.category || (isBigExpense ? 'Electronics' : 'Food'),
                 date: initialData.date ? initialData.date.split('T')[0] : new Date().toISOString().split('T')[0],
                 description: initialData.description || '',
                 person_name: initialData.person_name || '',
                 reminder_date: initialData.reminder_date ? initialData.reminder_date.split('T')[0] : '',
+                status: initialData.status || 'planned'
             });
         }
-    }, [initialData]);
+    }, [initialData, isBigExpense]);
 
-    const categories = ['Food', 'Transport', 'Shopping', 'Bills', 'Entertainment', 'Health', 'Other'];
+    const expenseCategories = ['Food', 'Transport', 'Shopping', 'Bills', 'Entertainment', 'Health', 'Other'];
+    const bigExpenseCategories = ['Electronics', 'Furniture', 'Vehicle', 'Property', 'Travel', 'Other'];
+
+    const categories = isBigExpense ? bigExpenseCategories : expenseCategories;
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -43,6 +50,7 @@ const AddModal = ({ currentScreen, onClose, onAdd, initialData, isEditing }) => 
             category: formData.category,
             date: new Date(formData.date).toISOString(),
             description: formData.description,
+            ...(isBigExpense && { status: formData.status })
         };
         onAdd(data);
     };
@@ -52,7 +60,9 @@ const AddModal = ({ currentScreen, onClose, onAdd, initialData, isEditing }) => 
             <div className="bg-white w-full max-w-lg rounded-t-3xl p-6 max-h-[90vh] overflow-y-auto">
                 <div className="flex justify-between items-center mb-6">
                     <h2 className="text-2xl font-bold text-gray-800">
-                        {isEditing ? `Edit ${isLoan ? 'Loan' : 'Expense'}` : `Add ${isLoan ? 'Loan' : 'Expense'}`}
+                        {isEditing
+                            ? `Edit ${isLoan ? 'Loan' : (isBigExpense ? 'Goal' : 'Expense')}`
+                            : `Add ${isLoan ? 'Loan' : (isBigExpense ? 'Goal' : 'Expense')}`}
                     </h2>
                     <button onClick={onClose} className="p-2 hover:bg-gray-100 rounded-full transition">
                         <X size={24} />
@@ -148,7 +158,9 @@ const AddModal = ({ currentScreen, onClose, onAdd, initialData, isEditing }) => 
                         type="submit"
                         className="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white py-4 rounded-xl font-semibold hover:shadow-lg transition"
                     >
-                        {isEditing ? 'Update' : (isLoan ? 'Add Loan' : 'Add Expense')}
+                        {isEditing
+                            ? 'Update'
+                            : (isLoan ? 'Add Loan' : (isBigExpense ? 'Add Goal' : 'Add Expense'))}
                     </button>
                 </form>
             </div>

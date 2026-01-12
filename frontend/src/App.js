@@ -4,17 +4,18 @@ import { api } from './api';
 import AuthScreen from './components/AuthScreen';
 import HomeScreen from './components/HomeScreen';
 import StatsScreen from './components/StatsScreen';
+import BigExpensesScreen from './components/BigExpensesScreen';
 import LoansScreen from './components/LoansScreen';
 import BottomNav from './components/BottomNav';
 import AddModal from './components/AddModal';
 import ConfirmModal from './components/ConfirmModal';
-
 
 export default function ExpenseTracker() {
   const [user, setUser] = useState(null);
   const [currentScreen, setCurrentScreen] = useState('home');
   const [expenses, setExpenses] = useState([]);
   const [loans, setLoans] = useState([]);
+  const [bigExpenses, setBigExpenses] = useState([]);
   const [stats, setStats] = useState({ total: 0, by_category: {}, count: 0 });
   const [reminders, setReminders] = useState([]);
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
@@ -65,6 +66,9 @@ export default function ExpenseTracker() {
       } else if (currentScreen === 'stats') {
         const statsRes = await api.getStats(viewMode === 'monthly' ? selectedMonth : null, selectedYear);
         setStats(statsRes);
+      } else if (currentScreen === 'big-expenses') {
+        const bigExpensesRes = await api.getBigExpenses();
+        setBigExpenses(bigExpensesRes.expenses);
       }
     } catch (err) {
       console.error('Error loading data:', err);
@@ -202,6 +206,20 @@ export default function ExpenseTracker() {
 
         {currentScreen === 'stats' && <StatsScreen stats={stats} />}
 
+        {currentScreen === 'big-expenses' && (
+          <BigExpensesScreen
+            expenses={bigExpenses}
+            onDelete={async (id) => {
+              await api.deleteBigExpense(id);
+              loadData();
+            }}
+            onUpdateStatus={async (id, status) => {
+              await api.updateBigExpense(id, { status });
+              loadData();
+            }}
+          />
+        )}
+
         {currentScreen === 'loans' && <LoansScreen
           loans={loans}
           onDelete={async (id) => {
@@ -244,12 +262,16 @@ export default function ExpenseTracker() {
             if (editingItem) {
               if (currentScreen === 'loans') {
                 await api.updateLoanDetails(editingItem._id, data);
+              } else if (currentScreen === 'big-expenses') {
+                await api.updateBigExpense(editingItem._id, data);
               } else {
                 await api.updateExpense(editingItem._id, data);
               }
             } else {
               if (currentScreen === 'loans') {
                 await api.addLoan(data);
+              } else if (currentScreen === 'big-expenses') {
+                await api.addBigExpense(data);
               } else {
                 await api.addExpense(data);
               }

@@ -8,6 +8,7 @@ from extensions import bcrypt, jwt
 from routes.auth import auth_bp
 from routes.expenses import expenses_bp
 from routes.loans import loans_bp
+from routes.big_expenses import big_expenses_bp
 
 load_dotenv()
 
@@ -32,6 +33,7 @@ jwt.init_app(app)
 app.register_blueprint(auth_bp, url_prefix='/api')
 app.register_blueprint(expenses_bp, url_prefix='/api/expenses')
 app.register_blueprint(loans_bp, url_prefix='/api/loans')
+app.register_blueprint(big_expenses_bp, url_prefix='/api/big-expenses')
 
 if __name__ == '__main__':
     app.run(debug=True, port=5000)

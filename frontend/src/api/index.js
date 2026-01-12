@@ -88,4 +88,18 @@ export const api = {
     deleteLoan: (id) => api.request(`/loans/${id}`, { method: 'DELETE' }),
 
     getReminders: () => api.request('/loans/reminders'),
+
+    getBigExpenses: () => api.request('/big-expenses'),
+
+    addBigExpense: (expense) => api.request('/big-expenses', {
+        method: 'POST',
+        body: JSON.stringify(expense),
+    }),
+
+    updateBigExpense: (id, updates) => api.request(`/big-expenses/${id}`, {
+        method: 'PATCH',
+        body: JSON.stringify(updates),
+    }),
+
+    deleteBigExpense: (id) => api.request(`/big-expenses/${id}`, { method: 'DELETE' }),
 };
