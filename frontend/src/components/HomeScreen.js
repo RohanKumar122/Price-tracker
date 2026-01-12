@@ -136,78 +136,93 @@ const HomeScreen = ({ stats, expenses, reminders, onDelete, onEdit, onDownload, 
             )}
 
             {/* Recent Expenses List */}
-            <div className="bg-white rounded-2xl p-5 shadow-lg min-h-[50vh]">
-                <h3 className="font-bold text-gray-800 mb-3 text-lg">Recent Expenses</h3>
-                <div className="space-y-2">
-                    {expenses.length === 0 ? (
-                        <div className="text-center text-gray-400 py-12">
-                            No expenses yet. Add your first expense!
-                        </div>
-                    ) : (
-                        expenses.map(expense => (
-                            <div
-                                key={expense._id}
-                                onClick={() => isSelectionMode && toggleSelection(expense._id)}
-                                className={`flex items-center justify-between p-3 rounded-xl transition cursor-pointer ${isSelectionMode && selectedIds.has(expense._id)
-                                        ? 'bg-purple-50 border border-purple-200'
-                                        : 'bg-gray-50 hover:bg-gray-100'
-                                    }`}
-                            >
-                                <div className="flex items-center gap-3">
-                                    {isSelectionMode ? (
-                                        <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors ${selectedIds.has(expense._id)
-                                                ? 'bg-purple-500 border-purple-500'
-                                                : 'border-gray-300'
-                                            }`}>
-                                            {selectedIds.has(expense._id) && <CheckCircle2 size={14} className="text-white" />}
-                                        </div>
-                                    ) : (
-                                        <div className={`w-10 h-10 rounded-full flex items-center justify-center ${getCategoryColor(expense.category)}`}>
-                                            {getCategoryIcon(expense.category)}
-                                        </div>
-                                    )}
-                                    <div>
-                                        <div className="font-semibold text-gray-800 leading-tight">{expense.title}</div>
-                                        <div className="text-xs text-gray-500 mt-0.5">
-                                            {new Date(expense.date).toLocaleDateString(undefined, { day: 'numeric', month: 'short' })} • {expense.category}
-                                        </div>
-                                    </div>
-                                </div>
-                                <div className="flex items-center gap-3">
-                                    <div className="text-right">
-                                        <div className="font-bold text-gray-800 flex items-center justify-end">
-                                            <IndianRupee size={14} strokeWidth={2.5} />
-                                            {expense.amount}
-                                        </div>
-                                    </div>
-                                    {!isSelectionMode && (
-                                        <div className="flex gap-3">
-                                            <button
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    onEdit(expense);
-                                                }}
-                                                className="p-1.5 text-blue-500 hover:bg-blue-50 rounded-lg transition"
-                                            >
-                                                <Pencil size={18} />
-                                            </button>
-                                            <button
-                                                onClick={(e) => {
-                                                    e.stopPropagation();
-                                                    confirmSingleDelete(expense._id);
-                                                }}
-                                                className="p-1.5 text-red-500 hover:bg-red-50 rounded-lg transition"
-                                            >
-                                                <X size={18} />
-                                            </button>
-                                        </div>
-                                    )}
-                                </div>
-                            </div>
-                        ))
-                    )}
-                </div>
+           <div className="bg-white rounded-2xl p-4 sm:p-5 shadow-lg min-h-[50vh]">
+    <h3 className="font-bold text-gray-800 mb-4 text-base sm:text-lg">
+        Recent Expenses
+    </h3>
+
+    <div className="space-y-3">
+        {expenses.length === 0 ? (
+            <div className="text-center text-gray-400 py-16 text-sm">
+                No expenses yet. Add your first expense!
             </div>
+        ) : (
+            expenses.map(expense => (
+                <div
+                    key={expense._id}
+                    onClick={() => isSelectionMode && toggleSelection(expense._id)}
+                    className={`flex items-start sm:items-center justify-between p-3 sm:p-4 rounded-xl transition cursor-pointer gap-3
+                        ${isSelectionMode && selectedIds.has(expense._id)
+                            ? 'bg-purple-50 border border-purple-200'
+                            : 'bg-gray-50 hover:bg-gray-100'
+                        }`}
+                >
+                    {/* Left Section */}
+                    <div className="flex items-start sm:items-center gap-3 flex-1 min-w-0">
+                        {isSelectionMode ? (
+                            <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors shrink-0
+                                ${selectedIds.has(expense._id)
+                                    ? 'bg-purple-500 border-purple-500'
+                                    : 'border-gray-300'
+                                }`}>
+                                {selectedIds.has(expense._id) && (
+                                    <CheckCircle2 size={14} className="text-white" />
+                                )}
+                            </div>
+                        ) : (
+                            <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 ${getCategoryColor(expense.category)}`}>
+                                {getCategoryIcon(expense.category)}
+                            </div>
+                        )}
+
+                        <div className="min-w-0">
+                            <div className="font-semibold text-gray-800 leading-tight truncate">
+                                {expense.title}
+                            </div>
+                            <div className="text-xs text-gray-500 mt-1">
+                                {new Date(expense.date).toLocaleDateString(undefined, { day: 'numeric', month: 'short' })} • {expense.category}
+                            </div>
+                        </div>
+                    </div>
+
+                    {/* Right Section */}
+                    <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+                        <div className="text-right">
+                            <div className="font-bold text-gray-800 flex items-center justify-end text-sm sm:text-base">
+                                <IndianRupee size={14} strokeWidth={2.5} />
+                                {expense.amount}
+                            </div>
+                        </div>
+
+                        {!isSelectionMode && (
+                            <div className="flex gap-1 sm:gap-2">
+                                <button
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        onEdit(expense);
+                                    }}
+                                    className="p-2 text-blue-500 hover:bg-blue-50 rounded-lg transition"
+                                >
+                                    <Pencil size={16} />
+                                </button>
+                                <button
+                                    onClick={(e) => {
+                                        e.stopPropagation();
+                                        confirmSingleDelete(expense._id);
+                                    }}
+                                    className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition"
+                                >
+                                    <X size={16} />
+                                </button>
+                            </div>
+                        )}
+                    </div>
+                </div>
+            ))
+        )}
+    </div>
+</div>
+
 
             <ConfirmModal
                 isOpen={showDeleteConfirm}
