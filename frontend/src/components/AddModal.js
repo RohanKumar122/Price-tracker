@@ -36,23 +36,33 @@ const AddModal = ({ currentScreen, onClose, onAdd, initialData, isEditing }) => 
 
     const categories = isBigExpense ? bigExpenseCategories : expenseCategories;
 
-    const handleSubmit = (e) => {
+    const [isSubmitting, setIsSubmitting] = useState(false);
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        const data = isLoan ? {
-            person_name: formData.person_name,
-            amount: formData.amount,
-            date: new Date(formData.date).toISOString(),
-            reminder_date: formData.reminder_date ? new Date(formData.reminder_date).toISOString() : null,
-            description: formData.description,
-        } : {
-            title: formData.title,
-            amount: formData.amount,
-            category: formData.category,
-            date: new Date(formData.date).toISOString(),
-            description: formData.description,
-            ...(isBigExpense && { status: formData.status })
-        };
-        onAdd(data);
+        if (isSubmitting) return;
+
+        setIsSubmitting(true);
+        try {
+            const data = isLoan ? {
+                person_name: formData.person_name,
+                amount: formData.amount,
+                date: new Date(formData.date).toISOString(),
+                reminder_date: formData.reminder_date ? new Date(formData.reminder_date).toISOString() : null,
+                description: formData.description,
+            } : {
+                title: formData.title,
+                amount: formData.amount,
+                category: formData.category,
+                date: new Date(formData.date).toISOString(),
+                description: formData.description,
+                ...(isBigExpense && { status: formData.status })
+            };
+            await onAdd(data);
+        } catch (error) {
+            console.error('Error adding/updating:', error);
+            setIsSubmitting(false); // Re-enable on error so user can try again
+        }
     };
 
     return (
@@ -156,13 +166,15 @@ const AddModal = ({ currentScreen, onClose, onAdd, initialData, isEditing }) => 
 
                     <button
                         type="submit"
-                        className="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white py-4 rounded-xl font-semibold hover:shadow-lg transition"
+                        disabled={isSubmitting}
+                        className="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white py-4 rounded-xl font-semibold hover:shadow-lg transition disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                        {isEditing
+                        {isSubmitting ? 'Processing...' : (isEditing
                             ? 'Update'
-                            : (isLoan ? 'Add Loan' : (isBigExpense ? 'Add Goal' : 'Add Expense'))}
+                            : (isLoan ? 'Add Loan' : (isBigExpense ? 'Add Goal' : 'Add Expense')))}
                     </button>
                 </form>
+
             </div>
         </div>
     );
